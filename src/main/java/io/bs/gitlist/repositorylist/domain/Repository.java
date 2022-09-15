@@ -1,19 +1,24 @@
 package io.bs.gitlist.repositorylist.domain;
 
 import io.bs.gitlist.repositorylist.dto.RepositoryDto;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
+@AllArgsConstructor
 class Repository {
+    @Getter
     private String name;
     private Owner owner;
 
-    public Repository(String name, Owner owner) {
-        this.name = name;
-        this.owner = owner;
-    }
-
-    public RepositoryDto toDto() {
-        return new RepositoryDto(name, owner.toDto(), new ArrayList<>());
+    public RepositoryDto toDto(List<Branch> branch) {
+        return new RepositoryDto(name, owner.toDto(),
+                branch.stream()
+                .map(Branch::toDto)
+                .collect(Collectors.toList())
+        );
     }
 }

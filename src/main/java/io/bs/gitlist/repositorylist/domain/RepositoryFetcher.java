@@ -12,44 +12,44 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-class BranchesFetcher {
+class RepositoryFetcher {
     private final HttpClient httpClient;
     private final Gson gson;
     private final Integer pageSize;
 
-    public BranchesFetcher(HttpClient httpClient, Integer pageSize) {
+    public RepositoryFetcher(HttpClient httpClient, Integer pageSize) {
         this.httpClient = httpClient;
         this.gson = new Gson();
         this.pageSize = pageSize;
     }
-    public List<Branch> fetchBranches(String username, String repository) {
-        List<Branch> result = new ArrayList<>();
+
+    public List<Repository> fetchRepositories(String username) {
+        List<Repository> result = new ArrayList<>();
         Integer page = 1;
-        Branch[] branches;
+        Repository[] repositories;
         try {
             do {
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(getUri(username, repository, page))
+                        .uri(getUriForRepositoryRequest(username, page))
                         .GET()
                         .build();
 
+
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-                branches = gson.fromJson( response.body(), Branch[].class );
-                result.addAll( Arrays.asList(branches) );
+                repositories = gson.fromJson( response.body(), Repository[].class );
+                result.addAll( Arrays.asList(repositories) );
                 page++;
-            } while( branches.length >= pageSize );
+            } while( repositories.length >= pageSize );
             return result;
         } catch (URISyntaxException | InterruptedException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private URI getUri(String owner, String repository, Integer page) throws URISyntaxException {
-        return new URI("https://api.github.com/repos/" +
-                owner +
-                "/" +
-                repository +
-                "/branches?page=" +
+    private URI getUriForRepositoryRequest(String username, Integer page) throws URISyntaxException {
+        return new URI("https://api.github.com/users/" +
+                username +
+                "/repos?page=" +
                 page.toString() +
                 "&per_page=" + pageSize.toString());
     }
