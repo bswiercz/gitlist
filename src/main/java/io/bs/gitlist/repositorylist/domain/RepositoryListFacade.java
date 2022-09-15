@@ -5,6 +5,7 @@ import io.bs.gitlist.repositorylist.dto.RepositoryDto;
 import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RepositoryListFacade {
 
@@ -16,7 +17,10 @@ public class RepositoryListFacade {
         this.repositoryListFetcher = new RepositoryListFetcher(this.httpClient);
     }
 
-    public String findRepositories(String username) {
-        return this.repositoryListFetcher.fetch(username, 1, 1);
+    public List<RepositoryDto> findRepositories(String username) {
+        return this.repositoryListFetcher.fetch(username, 1, 1)
+                .stream()
+                .map(Repository::toDto)
+                .collect(Collectors.toList());
     }
 }

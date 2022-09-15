@@ -1,26 +1,20 @@
 package io.bs.gitlist.repositorylist.domain;
 
-import com.google.gson.Gson;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Arrays;
-import java.util.List;
 
-class RepositoryListFetcher {
+class BranchesFetcher {
     private final HttpClient httpClient;
 
-    public RepositoryListFetcher(HttpClient httpClient) {
+    public BranchesFetcher(HttpClient httpClient) {
         this.httpClient = httpClient;
     }
 
-    public List<Repository> fetch(String username, Integer page, Integer pageSize) {
-
-        Gson gson = new Gson();
+    public String fetch(String username, Integer page, Integer pageSize) {
 
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -29,9 +23,8 @@ class RepositoryListFetcher {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            Repository[] repositories = gson.fromJson( response.body(), Repository[].class);
 
-            return Arrays.asList(repositories);
+            return response.body();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
