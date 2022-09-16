@@ -1,6 +1,8 @@
 package io.bs.gitlist.repositorylist.domain;
 
 import com.google.gson.Gson;
+import io.bs.gitlist.repositorylist.dto.UserNotFoundException;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.net.URI;
@@ -36,6 +38,11 @@ class RepositoryFetcher {
 
 
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if( response.statusCode() == HttpStatus.NOT_FOUND.value() ) {
+                    throw new UserNotFoundException(username);
+                }
+
                 repositories = gson.fromJson( response.body(), Repository[].class );
                 result.addAll( Arrays.asList(repositories) );
                 page++;
