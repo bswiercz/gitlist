@@ -21,6 +21,7 @@ public class RepositoryListFacade {
     public List<RepositoryDto> findRepositories(String username) {
         return this.repositoryFetcher.fetchRepositories(username)
                 .parallelStream()
+                .filter(r -> !r.getFork())
                 .map(r -> r.toDto( branchesFetcher.fetchBranches(username, r.getName()) ))
                 .collect(Collectors.toList());
     }
