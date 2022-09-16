@@ -13,6 +13,8 @@ class Repository {
     @Getter
     private String name;
     private Owner owner;
+    @Getter
+    private Boolean fork;
 
     public RepositoryDto toDto(List<Branch> branch) {
         return new RepositoryDto(name, owner.toDto(),
