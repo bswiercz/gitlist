@@ -14,11 +14,19 @@ class AcceptanceSpec extends IntegrationSpec {
     RepositoryListFacade repositoryListFacade
 
     def "successful repository fetching scenario"() {
-        when: 'I go to /users/bswiercz/repos'
-        ResultActions getRepositories = mockMvc.perform(get("/users/bswiercz/repos"))
+        when: 'I go to /users/torvalds/repos'
+        ResultActions getRepositories = mockMvc.perform(get("/users/torvalds/repos"))
 
         then: 'I get repositories'
         getRepositories.andExpect( status().isOk() )
-                .andExpect(jsonPath("\$[*].name").value(["DatAcq","ftdispi","gitlist","Inz","magicnumbers","SenServer","syko_proj"]))
+                .andExpect(jsonPath("\$[*].name").value(["linux","pesconvert","test-tlb","uemacs"]))
+    }
+
+    def "github user not exist scenario"() {
+        when: 'I go to /users/thispersondoesnotexist/repos'
+        ResultActions getRepositories = mockMvc.perform(get("/users/qdnownfwovcnviueavibunajnnborqdnownfwovcnviueavibunajnnbor/repos"))
+
+        then: 'I get error message'
+        getRepositories.andExpect( status().isNotFound() )
     }
 }

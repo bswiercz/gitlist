@@ -14,8 +14,8 @@ public class RepositoryListFacade {
 
     public RepositoryListFacade(HttpClient httpClient) {
         this.httpClient = httpClient;
-        this.repositoryFetcher = new RepositoryFetcher(this.httpClient, 3);
-        this.branchesFetcher = new BranchesFetcher(this.httpClient, 3);
+        this.repositoryFetcher = new RepositoryFetcher(this.httpClient, 100);
+        this.branchesFetcher = new BranchesFetcher(this.httpClient, 100);
     }
 
     public List<RepositoryDto> findRepositories(String username) {
